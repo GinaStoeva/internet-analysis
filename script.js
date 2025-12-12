@@ -370,3 +370,4 @@ function refreshGlobePoints(){
   globe.pointsTransitionDuration(700);
   globe.pointsData(records.filter(r => r._visible));
 }
+
