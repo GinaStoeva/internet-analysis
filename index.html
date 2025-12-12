@@ -1,130 +1,342 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Internet Speeds Explorer — SDG 9 Showcase</title>
+// Project: Impressive-Data-Site
+// Drop your CSV into /public/data.csv and your program into /src/utils/userProgram.js
+// This single-file project scaffold contains multiple files separated by comments.
 
-<!-- Fonts & libraries -->
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://unpkg.com/aos@2.3.1/dist/aos.css" />
+/* =======================
+   file: package.json
+   ======================= */
+{
+  "name": "impressive-data-site",
+  "version": "1.0.0",
+  "private": true,
+  "dependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "papaparse": "^5.4.1",
+    "recharts": "^2.6.2",
+    "react-globe.gl": "^2.9.6",
+    "three": "^0.155.0",
+    "framer-motion": "^10.12.0",
+    "lucide-react": "^0.269.0",
+    "@shadcn/ui": "^0.1.0",
+    "clsx": "^1.2.1"
+  },
+  "scripts": {
+    "start": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "vite": "^5.0.0",
+    "@vitejs/plugin-react": "^4.0.0",
+    "tailwindcss": "^4.0.0",
+    "postcss": "^8.4.0",
+    "autoprefixer": "^10.4.0"
+  }
+}
 
-<!-- Libraries -->
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
-<script src="https://unpkg.com/three@0.153.0/build/three.min.js"></script>
-<script src="https://unpkg.com/globe.gl"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+/* =======================
+   file: README.md
+   ======================= */
+# Impressive Data Site
 
-<link rel="stylesheet" href="style.css">
-</head>
-<body>
-<header>
-  <div class="brand">
-    <h1>Internet Speeds Explorer — SDG 9</h1>
-    <div class="subtitle">Industry, Innovation &amp; Infrastructure — interactive analysis</div>
-  </div>
+Drop your CSV into `public/data.csv` (or change the path in `src/App.jsx`).
+Drop your existing program as `src/utils/userProgram.js` — it should export a default async function `analyze(data)` that accepts the parsed CSV array and returns objects used for visualizations. The scaffold will import and call it at runtime.
 
-  <div class="controls">
-    <label style="display:flex;align-items:center;gap:8px">
-      <input id="csvFile" type="file" accept=".csv" hidden>
-      <button id="uploadBtn" class="btn">Upload CSV</button>
-    </label>
-    <button id="useSample" class="btn ghost">Use Sample Data</button>
-    <button id="exportReport" class="btn ghost">Export PDF</button>
-  </div>
-</header>
+Commands:
 
-<main class="container">
-  <section class="panel" data-aos="fade-up">
-    <div class="row">
-      <div class="col">
-        <label class="small">Choose year</label>
-        <select id="yearSelect">
-          <option value="2024">2024</option>
-          <option value="2023">2023</option>
-          <option value="both">Compare (avg)</option>
-        </select>
-      </div>
+```
+npm install
+npm run dev
+```
 
-      <div class="col">
-        <label class="small">Select countries (comma-separated)</label>
-        <input id="countryInput" placeholder="e.g. Canada, Japan, Germany" />
-      </div>
+Deploy: push to GitHub, connect to Vercel or Netlify.
 
-      <div class="col">
-        <label class="small">Filter by continent</label>
-        <select id="continentSelect">
-          <option value="all">All continents</option>
-          <option value="Asia">Asia</option>
-          <option value="Europe">Europe</option>
-          <option value="Africa">Africa</option>
-          <option value="Americas">Americas</option>
-          <option value="Oceania">Oceania</option>
-        </select>
-      </div>
 
-      <div style="display:flex;align-items:end;gap:8px;width:200px">
-        <button id="runQuery" class="btn">Run Query</button>
-        <button id="clearSelection" class="btn ghost">Clear</button>
-      </div>
+/* =======================
+   file: public/data.csv
+   ======================= */
+"PLACEHOLDER: replace this file with your CSV"
+
+/* =======================
+   file: src/main.jsx
+   ======================= */
+import React from 'react'
+import { createRoot } from 'react-dom/client'
+import App from './App'
+import './styles.css'
+
+createRoot(document.getElementById('root')).render(<App />)
+
+/* =======================
+   file: src/styles.css
+   ======================= */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html, body, #root { height: 100%; }
+
+/* =======================
+   file: src/utils/parseCSV.js
+   ======================= */
+import Papa from 'papaparse'
+
+export function parseCSVText(csvText) {
+  return new Promise((resolve, reject) => {
+    Papa.parse(csvText, {
+      header: true,
+      dynamicTyping: true,
+      skipEmptyLines: true,
+      complete: (results) => resolve(results.data),
+      error: (err) => reject(err),
+    })
+  })
+}
+
+export async function fetchAndParseCSV(url = '/data.csv') {
+  const res = await fetch(url)
+  if (!res.ok) throw new Error('Failed to fetch CSV: ' + res.status)
+  const text = await res.text()
+  return parseCSVText(text)
+}
+
+/* =======================
+   file: src/utils/userProgram.js
+   ======================= */
+// PLACEHOLDER for your program.
+// Replace or edit this file with your code. This should export a default async function `analyze(data)`.
+
+export default async function analyze(data) {
+  // Example automatic analysis: detect numeric columns and compute basic stats.
+  const numericKeys = new Set()
+  data.forEach(row => {
+    Object.entries(row).forEach(([k,v]) => {
+      if (typeof v === 'number' && !Number.isNaN(v)) numericKeys.add(k)
+    })
+  })
+  const stats = {}
+  numericKeys.forEach(k => {
+    const vals = data.map(r => r[k]).filter(v => typeof v === 'number' && !Number.isNaN(v))
+    const n = vals.length
+    const sum = vals.reduce((s,x)=>s+x,0)
+    const mean = sum / n
+    const min = Math.min(...vals)
+    const max = Math.max(...vals)
+    stats[k] = { n, sum, mean, min, max }
+  })
+  // Example: produce top 10 rows for table, and a simple series for one numeric column
+  const preview = data.slice(0, 10)
+  const seriesKey = Array.from(numericKeys)[0] || null
+  const series = seriesKey ? data.map((d, i) => ({ index: i, value: d[seriesKey] })) : []
+  return { stats, preview, series, seriesKey }
+}
+
+/* =======================
+   file: src/components/GlobeViewer.jsx
+   ======================= */
+import React, { useEffect, useRef } from 'react'
+import Globe from 'react-globe.gl'
+
+export default function GlobeViewer({ points = [] }) {
+  const ref = useRef()
+
+  useEffect(() => {
+    if (!ref.current) return
+    ref.current.controls().autoRotate = true
+    ref.current.controls().autoRotateSpeed = 0.3
+  }, [])
+
+  const gData = points.map((p, i) => ({
+    lat: p.lat || (Math.random() * 180 - 90),
+    lng: p.lng || (Math.random() * 360 - 180),
+    size: p.value || 1,
+    color: p.color || 'orange',
+  }))
+
+  return (
+    <div className="w-full h-96 rounded-2xl shadow-xl overflow-hidden">
+      <Globe
+        ref={ref}
+        globeImageUrl="https://unpkg.com/three-globe/example/img/earth-dark.jpg"
+        pointsData={gData}
+        pointAltitude={d => Math.sqrt(d.size) * 0.01}
+        pointColor={d => d.color}
+        pointRadius={d => Math.sqrt(d.size) * 0.5}
+      />
     </div>
+  )
+}
 
-    <div class="results" style="margin-top:12px">
-      <div class="kpiRow">
-        <div class="kpi"><div class="small">Global avg (2024)</div><div id="kpiAvg" class="kpiNum">—</div></div>
-        <div class="kpi"><div class="small">Countries improved</div><div id="kpiGrowth" class="kpiNum">—</div></div>
-        <div class="kpi"><div class="small">SDG-9 Impact</div><div id="kpiImpact" class="kpiNum">—</div></div>
-      </div>
+/* =======================
+   file: src/App.jsx
+   ======================= */
+import React, { useEffect, useState } from 'react'
+import { fetchAndParseCSV } from './utils/parseCSV'
+import dynamic from 'react'
+import { motion } from 'framer-motion'
+import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, LineChart, Line } from 'recharts'
+import GlobeViewer from './components/GlobeViewer'
+import analyzeDefault from './utils/userProgram'
+
+export default function App() {
+  const [data, setData] = useState(null)
+  const [analysis, setAnalysis] = useState(null)
+  const [error, setError] = useState(null)
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    async function load() {
+      try {
+        const parsed = await fetchAndParseCSV('/data.csv')
+        setData(parsed)
+        // Attempt to import user's program; if user hasn't replaced it, fallback to bundled one.
+        let result = null
+        try {
+          // dynamic import so users can modify without re-bundling in dev
+          const mod = await import('./utils/userProgram')
+          const analyze = mod.default || analyzeDefault
+          result = await analyze(parsed)
+        } catch (e) {
+          // fallback
+          result = await analyzeDefault(parsed)
+        }
+        setAnalysis(result)
+      } catch (e) {
+        setError(e.message)
+      } finally {
+        setLoading(false)
+      }
+    }
+    load()
+  }, [])
+
+  if (loading) return <div className="min-h-screen flex items-center justify-center">Loading dataset and analysis...</div>
+  if (error) return <div className="min-h-screen flex items-center justify-center text-red-500">Error: {error}</div>
+
+  const numericStats = analysis?.stats || {}
+  const series = analysis?.series || []
+  const preview = analysis?.preview || []
+  const seriesKey = analysis?.seriesKey
+
+  // Build bars for stat summary
+  const statBars = Object.entries(numericStats).map(([k, v]) => ({ name: k, mean: v.mean }))
+
+  return (
+    <div className="min-h-screen bg-gradient-to-b from-slate-900 to-slate-800 text-slate-100 p-6">
+      <header className="max-w-7xl mx-auto flex items-center justify-between mb-6">
+        <h1 className="text-3xl font-extrabold">Impressive Data Site</h1>
+        <div className="text-sm opacity-80">Drop CSV into <code className="bg-slate-700 px-2 py-1 rounded">/public/data.csv</code></div>
+      </header>
+
+      <main className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <section className="lg:col-span-2 space-y-4">
+          <motion.div className="p-6 rounded-2xl bg-gradient-to-r from-slate-800 to-slate-700 shadow-2xl" initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }}>
+            <h2 className="text-xl font-semibold mb-2">Overview & Stats</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="p-4 bg-slate-900 rounded-xl">
+                <h3 className="text-sm opacity-80">Numeric column summary</h3>
+                <div className="h-48">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <BarChart data={statBars}>
+                      <XAxis dataKey="name" tick={{ fontSize: 12 }} />
+                      <YAxis />
+                      <Tooltip />
+                      <Bar dataKey="mean" />
+                    </BarChart>
+                  </ResponsiveContainer>
+                </div>
+              </div>
+
+              <div className="p-4 bg-slate-900 rounded-xl">
+                <h3 className="text-sm opacity-80">Top preview</h3>
+                <div className="mt-2 text-xs overflow-auto max-h-48">
+                  <table className="table-auto w-full text-left text-xs">
+                    <thead>
+                      <tr>
+                        {preview[0] && Object.keys(preview[0]).slice(0,6).map(k => <th key={k} className="pr-2">{k}</th>)}
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {preview.map((row, i) => (
+                        <tr key={i} className={i%2? 'bg-slate-800':''}>
+                          {Object.values(row).slice(0,6).map((v, j) => <td key={j} className="pr-2">{String(v)}</td>)}
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </motion.div>
+
+          <motion.div className="p-6 rounded-2xl bg-gradient-to-r from-slate-800 to-slate-700 shadow-2xl" initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }}>
+            <h2 className="text-xl font-semibold mb-2">Interactive Series</h2>
+            {seriesKey ? (
+              <div className="h-64">
+                <ResponsiveContainer width="100%" height="100%">
+                  <LineChart data={series}>
+                    <XAxis dataKey="index" />
+                    <YAxis />
+                    <Tooltip />
+                    <Line type="monotone" dataKey="value" dot={false} />
+                  </LineChart>
+                </ResponsiveContainer>
+              </div>
+            ) : (
+              <div className="text-sm opacity-70">No numeric series detected. Add numeric columns to your CSV or edit <code>src/utils/userProgram.js</code> to choose which column to visualize.</div>
+            )}
+          </motion.div>
+
+          <motion.div className="p-6 rounded-2xl bg-gradient-to-r from-slate-800 to-slate-700 shadow-2xl" initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }}>
+            <h2 className="text-xl font-semibold mb-2">Geographic Globe (smartly mapped)</h2>
+            <GlobeViewer points={series.slice(0,200).map((d,i)=>({ value: Math.abs(d.value||0) }))} />
+          </motion.div>
+        </section>
+
+        <aside className="space-y-4">
+          <div className="p-4 rounded-2xl bg-slate-900 shadow-inner">
+            <h3 className="font-medium">Analysis Summary</h3>
+            <pre className="text-xs mt-2 max-h-64 overflow-auto bg-slate-800 p-3 rounded">{JSON.stringify(analysis, null, 2)}</pre>
+          </div>
+
+          <div className="p-4 rounded-2xl bg-slate-900">
+            <h3 className="font-medium">Deploy</h3>
+            <ol className="mt-2 text-sm list-decimal list-inside">
+              <li>Push the project to GitHub</li>
+              <li>Connect repo to Vercel (recommended) or Netlify</li>
+              <li>Set build command `npm run build` and publish directory `dist`</li>
+            </ol>
+          </div>
+
+          <div className="p-4 rounded-2xl bg-slate-900">
+            <h3 className="font-medium">Customize</h3>
+            <p className="text-sm mt-2">Edit <code>src/utils/userProgram.js</code> to run your program on the parsed CSV. The site will call `analyze(data)` and automatically adapt.</p>
+          </div>
+        </aside>
+      </main>
+
+      <footer className="max-w-7xl mx-auto mt-8 text-sm opacity-70">Built to be a jaw-dropper — drop your CSV and your program into the repo and push to GitHub. Want me to adapt this to your exact CSV? Tell me the column names or upload the CSV here.</footer>
     </div>
-  </section>
+  )
+}
 
-  <section class="panel grid" data-aos="fade-up">
-    <div class="card">
-      <h3>Selected Country Comparison</h3>
-      <canvas id="countryChart"></canvas>
-    </div>
-
-    <div class="card">
-      <h3>Top Countries (2024)</h3>
-      <canvas id="topChart"></canvas>
-    </div>
-
-    <div class="card">
-      <h3>Outliers</h3>
-      <div id="outliers" class="small">—</div>
-    </div>
-  </section>
-
-  <section class="panel" data-aos="fade-up">
-    <div class="panel-flex">
-      <div style="flex:1;min-width:420px">
-        <h3>Interactive 3D Globe — click a country to select</h3>
-        <div id="globeViz"></div>
-        <div class="small" style="margin-top:8px">Tip: Click points to select → charts update. Use the continent filter to focus.</div>
-      </div>
-
-      <div style="width:360px;margin-left:12px">
-        <div class="infoBox">
-          <h4>Selected Countries</h4>
-          <div id="selectedList" class="small">None</div>
-        </div>
-        <div class="infoBox" style="margin-top:12px">
-          <h4>Country Details</h4>
-          <div id="countryDetails" class="small">Click a country on the globe for details.</div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <section class="panel" data-aos="fade-up" id="storyPanel">
-    <h3>Project Story — SDG 9</h3>
-    <p class="small">This tool visualizes internet speeds as a proxy for infrastructure investment and innovation (SDG 9). Use it to find regions improving fastest, outliers, and where investments are most needed.</p>
-  </section>
-
-  <footer><small>Built for STEAM Showcase — advanced interactive demo focused on SDG-9.</small></footer>
-</main>
-
-<script src="script.js"></script>
-</body>
+/* =======================
+   file: index.html
+   ======================= */
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Impressive Data Site</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
 </html>
+
+/* =======================
+   End of scaffold
+   ======================= */
