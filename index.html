@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Internet Speeds Explorer — SDG 9 Showcase</title>
+
+<!-- Fonts & libraries -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/aos@2.3.1/dist/aos.css" />
+
+<!-- Libraries -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script src="https://unpkg.com/three@0.153.0/build/three.min.js"></script>
+<script src="https://unpkg.com/globe.gl"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header>
+  <div class="brand">
+    <h1>Internet Speeds Explorer — SDG 9</h1>
+    <div class="subtitle">Industry, Innovation &amp; Infrastructure — interactive analysis</div>
+  </div>
+
+  <div class="controls">
+    <label style="display:flex;align-items:center;gap:8px">
+      <input id="csvFile" type="file" accept=".csv" hidden>
+      <button id="uploadBtn" class="btn">Upload CSV</button>
+    </label>
+    <button id="useSample" class="btn ghost">Use Sample Data</button>
+    <button id="exportReport" class="btn ghost">Export PDF</button>
+  </div>
+</header>
+
+<main class="container">
+  <section class="panel" data-aos="fade-up">
+    <div class="row">
+      <div class="col">
+        <label class="small">Choose year</label>
+        <select id="yearSelect">
+          <option value="2024">2024</option>
+          <option value="2023">2023</option>
+          <option value="both">Compare (avg)</option>
+        </select>
+      </div>
+
+      <div class="col">
+        <label class="small">Select countries (comma-separated)</label>
+        <input id="countryInput" placeholder="e.g. Canada, Japan, Germany" />
+      </div>
+
+      <div class="col">
+        <label class="small">Filter by continent</label>
+        <select id="continentSelect">
+          <option value="all">All continents</option>
+          <option value="Asia">Asia</option>
+          <option value="Europe">Europe</option>
+          <option value="Africa">Africa</option>
+          <option value="Americas">Americas</option>
+          <option value="Oceania">Oceania</option>
+        </select>
+      </div>
+
+      <div style="display:flex;align-items:end;gap:8px;width:200px">
+        <button id="runQuery" class="btn">Run Query</button>
+        <button id="clearSelection" class="btn ghost">Clear</button>
+      </div>
+    </div>
+
+    <div class="results" style="margin-top:12px">
+      <div class="kpiRow">
+        <div class="kpi"><div class="small">Global avg (2024)</div><div id="kpiAvg" class="kpiNum">—</div></div>
+        <div class="kpi"><div class="small">Countries improved</div><div id="kpiGrowth" class="kpiNum">—</div></div>
+        <div class="kpi"><div class="small">SDG-9 Impact</div><div id="kpiImpact" class="kpiNum">—</div></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="panel grid" data-aos="fade-up">
+    <div class="card">
+      <h3>Selected Country Comparison</h3>
+      <canvas id="countryChart"></canvas>
+    </div>
+
+    <div class="card">
+      <h3>Top Countries (2024)</h3>
+      <canvas id="topChart"></canvas>
+    </div>
+
+    <div class="card">
+      <h3>Outliers</h3>
+      <div id="outliers" class="small">—</div>
+    </div>
+  </section>
+
+  <section class="panel" data-aos="fade-up">
+    <div class="panel-flex">
+      <div style="flex:1;min-width:420px">
+        <h3>Interactive 3D Globe — click a country to select</h3>
+        <div id="globeViz"></div>
+        <div class="small" style="margin-top:8px">Tip: Click points to select → charts update. Use the continent filter to focus.</div>
+      </div>
+
+      <div style="width:360px;margin-left:12px">
+        <div class="infoBox">
+          <h4>Selected Countries</h4>
+          <div id="selectedList" class="small">None</div>
+        </div>
+        <div class="infoBox" style="margin-top:12px">
+          <h4>Country Details</h4>
+          <div id="countryDetails" class="small">Click a country on the globe for details.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="panel" data-aos="fade-up" id="storyPanel">
+    <h3>Project Story — SDG 9</h3>
+    <p class="small">This tool visualizes internet speeds as a proxy for infrastructure investment and innovation (SDG 9). Use it to find regions improving fastest, outliers, and where investments are most needed.</p>
+  </section>
+
+  <footer><small>Built for STEAM Showcase — advanced interactive demo focused on SDG-9.</small></footer>
+</main>
+
+<script src="script.js"></script>
+</body>
+</html>
